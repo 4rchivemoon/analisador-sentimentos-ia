@@ -357,7 +357,11 @@ def main():
             # Simular delay para efeito de processamento
             import time
             time.sleep(1.5)
-            
+
+            st.write(f"Topico: {topico}")
+st.write(f"Quantidade: {quantidade}")
+st.write(f"Tópicos disponíveis: {list(analyzer.topicos_premium.keys())}")
+st.write(f"Tweets disponíveis: {len(analyzer.topicos_premium[topico])}")
             tweets = random.sample(analyzer.topicos_premium[topico], quantidade)
             resultados = []
             
