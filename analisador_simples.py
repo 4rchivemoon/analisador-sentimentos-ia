@@ -271,12 +271,11 @@ class TwitterSentimentAnalyzer:
             return "⚖️  NEUTRO", score, "#fdcb6e", "➡️"
 
 def main():
-  analyzer = TwitterSentimentAnalyzer()
+    analyzer = TwitterSentimentAnalyzer()  # ← 4 espaços
     
     # HEADER PREMIUM
     st.markdown('<h1 class="main-header">🚀 Sentiment Analytics Pro</h1>', unsafe_allow_html=True)
     st.markdown('<p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 3rem;">Análise de Sentimentos em Tempo Real • IA Avançada</p>', unsafe_allow_html=True)
-    
     # SIDEBAR PREMIUM
     with st.sidebar:
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
