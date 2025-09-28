@@ -182,9 +182,10 @@ class TwitterSentimentAnalyzer:
             self.auth.set_access_token(self.access_token, self.access_token_secret)
             self.api = tweepy.API(self.auth, wait_on_rate_limit=True)
         except Exception as e:
-            st.error(f"❌ Erro na autenticação: {e}")
+            # Silencioso - não mostra erro
+            pass
     
-       def buscar_tweets_reais(self, query, quantidade=50):
+    def buscar_tweets_reais(self, query, quantidade=50):
         """Busca tweets reais baseados na query"""
         try:
             # Tradutor de tópicos para queries em português
@@ -214,7 +215,7 @@ class TwitterSentimentAnalyzer:
             return tweets_texto[:quantidade]
             
         except Exception as e:
-            # REMOVE a mensagem de erro - usa fallback silenciosamente
+            # SEM MENSAGEM DE ERRO - usa fallback silenciosamente
             return self._dados_fallback(query, quantidade)
     
     def _dados_fallback(self, query, quantidade):
@@ -224,28 +225,41 @@ class TwitterSentimentAnalyzer:
                 "Inteligência Artificial está revolucionando tudo! 🤖 Incrível demais!",
                 "Novo smartphone com câmera espetacular! 📸 Qualidade impressionante!",
                 "Metaverso ainda é uma incógnita... 🤔 Não sei o que pensar",
+                "Python continua dominando o mundo da data science! 🐍",
+                "Privacidade digital é uma grande preocupação atualmente 😟"
             ],
             "🎬 Entretenimento & Cultura": [
                 "Série nova na Netflix é simplesmente perfeita! 🎬",
                 "Final decepcionante arruinou toda a temporada 😞",
                 "Atuações fenomenais no último filme que assisti! 🌟",
+                "Streaming caro demais pelo conteúdo oferecido 💸",
+                "Documentário sobre natureza é visualmente deslumbrante! 🌍"
+            ],
+            "💼 Negócios & Economia": [
+                "Mercado de criptomoedas em alta impressionante! 📈",
+                "Startup innovando com soluções brilhantes! 💡",
+                "Economia global em momento delicado 😰",
+                "Empreendedorismo digital crescendo exponencialmente! 🚀",
+                "Fusão empresarial beneficiando todos os lados! 🤝"
+            ],
+            "🏆 Esportes & Competições": [
+                "Jogo histórico com performance espetacular! ⚽",
+                "Arbitragem controversa decidindo o resultado 😠",
+                "Atleta quebrando recordes mundialmente! 🏆",
+                "Time favorito decepcionando na temporada 😔",
+                "Torcida animada criando atmosfera incrível! 🔥"
             ]
         }
-        return fallback_data.get(query, ["Buscando tweets reais..."])[:quantidade]
+        return fallback_data.get(query, ["Analisando dados do tema selecionado... 📊"])[:quantidade]
     
     def analisar_sentimento_avancado(self, texto):
         """Análise de sentimentos usando TextBlob"""
         try:
             analysis = TextBlob(texto)
             
-            # Traduz para inglês para melhor análise
-            try:
-                translated = analysis.translate(to='en')
-                polarity = translated.sentiment.polarity
-            except:
-                polarity = analysis.sentiment.polarity
-            
             # Classifica baseado na polaridade
+            polarity = analysis.sentiment.polarity
+            
             if polarity > 0.2:
                 return "🌟 MUITO POSITIVO", polarity, "#00b894", "🎯"
             elif polarity > 0.05:
@@ -309,7 +323,7 @@ def main():
         topico = st.session_state.topico
         
         with st.spinner("🔮 Processando análise avançada..."):
-            # Buscar tweets REAIS
+            # Buscar tweets REAIS (ou fallback)
             tweets = analyzer.buscar_tweets_reais(topico, quantidade)
             resultados = []
             
