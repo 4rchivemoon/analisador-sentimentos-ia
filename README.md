@@ -2,13 +2,13 @@
 
 Sistema de análise de sentimentos desenvolvido em Python com Streamlit, focado em português brasileiro.
 
-## 🚀 Funcionalidades
+##  Funcionalidades
 
-- ✅ Análise de sentimentos em tempo real
-- ✅ Interface moderna com gráficos interativos
-- ✅ Foco em português brasileiro
-- ✅ Machine Learning para classificação
-- ✅ Dashboard profissional
+- Análise de sentimentos em tempo real
+- Interface moderna com gráficos interativos
+-  Foco em português brasileiro
+- Machine Learning para classificação
+- Dashboard profissional
 
 ## 🛠️ Tecnologias
 
@@ -18,7 +18,7 @@ Sistema de análise de sentimentos desenvolvido em Python com Streamlit, focado 
 - Plotly
 - Machine Learning
 
-## 📊 Como usar
+##  Como usar
 
 1. Clone o repositório
 2. Instale as dependências: `pip install -r requirements.txt`
