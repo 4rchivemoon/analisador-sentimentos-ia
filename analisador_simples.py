@@ -214,8 +214,8 @@ class TwitterSentimentAnalyzer:
             return tweets_texto[:quantidade]
             
         except Exception as e:
-            st.error(f"Erro ao buscar tweets: {e}")
-            return self._dados_fallback(query, quantidade)
+          st.error(f"Erro ao buscar tweets: {e}")
+          return self._dados_fallback(query, quantidade)
     
     def _dados_fallback(self, query, quantidade):
         """Dados de fallback caso a API do Twitter falhe"""
