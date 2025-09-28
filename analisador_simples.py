@@ -358,11 +358,8 @@ def main():
             import time
             time.sleep(1.5)
 
-            st.write(f"Topico: {topico}")
-st.write(f"Quantidade: {quantidade}")
-st.write(f"Tópicos disponíveis: {list(analyzer.topicos_premium.keys())}")
-st.write(f"Tweets disponíveis: {len(analyzer.topicos_premium[topico])}")
-            tweets = random.sample(analyzer.topicos_premium[topico], quantidade)
+            tweets_disponiveis = analyzer.topicos_premium[topico]
+            tweets = random.sample(tweets_disponiveis, min(quantidade, len(tweets_disponiveis)))
             resultados = []
             
             for tweet in tweets:
