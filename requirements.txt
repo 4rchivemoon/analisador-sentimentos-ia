@@ -5,3 +5,6 @@ scikit-learn
 numpy
 nltk
 textblob
+tweepy
+textblob-pt
+googletrans==3.1.0a0
