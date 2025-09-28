@@ -154,139 +154,104 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 class SentimentAnalyzerPro:
+    import tweepy
+import os
+from textblob import TextBlob
+
+class TwitterSentimentAnalyzer:
     def __init__(self):
-        self.topicos_premium = {
-            "🚀 Tecnologia & Inovação": self._tweets_tecnologia(),
-            "🎬 Entretenimento & Cultura": self._tweets_entretenimento(),
-            "💼 Negócios & Economia": self._tweets_negocios(),
-            "🏆 Esportes & Competições": self._tweets_esportes(),
-            "🌍 Sustentabilidade & Meio Ambiente": self._tweets_sustentabilidade(),
-            "🏛️ Política & Sociedade": self._tweets_politica(),
-            "🎵 Música & Artes": self._tweets_musica(),
-            "🛒 Consumo & Marcas": self._tweets_consumo()
+        # CONFIGURAÇÃO SEGURA COM SECRETS
+        self.api_key = st.secrets["TWITTER_API_KEY"]
+        self.api_secret = st.secrets["TWITTER_API_SECRET"]
+        self.access_token = st.secrets["TWITTER_ACCESS_TOKEN"]
+        self.access_token_secret = st.secrets["TWITTER_ACCESS_TOKEN_SECRET"]
+        
+        # Autenticação
+        try:
+            self.auth = tweepy.OAuthHandler(self.api_key, self.api_secret)
+            self.auth.set_access_token(self.access_token, self.access_token_secret)
+            self.api = tweepy.API(self.auth, wait_on_rate_limit=True)
+            st.success("✅ Conectado ao Twitter API!")
+        except Exception as e:
+            st.error(f"❌ Erro na autenticação: {e}")
+    
+    def buscar_tweets_reais(self, query, quantidade=50):
+        """Busca tweets reais baseados na query"""
+        try:
+            # Tradutor de tópicos para queries em português
+            topicos_queries = {
+                "🚀 Tecnologia & Inovação": "tecnologia OR inteligência artificial OR IA OR startups OR inovação -filter:retweets lang:pt",
+                "🎬 Entretenimento & Cultura": "filmes OR séries OR Netflix OR cinema OR cultura -filter:retweets lang:pt",
+                "💼 Negócios & Economia": "negócios OR economia OR mercado OR investimentos OR finanças -filter:retweets lang:pt",
+                "🏆 Esportes & Competições": "futebol OR esportes OR campeonato OR jogo OR atleta -filter:retweets lang:pt",
+                "🌍 Sustentabilidade & Meio Ambiente": "sustentabilidade OR meio ambiente OR ecologia OR clima -filter:retweets lang:pt",
+                "🏛️ Política & Sociedade": "política OR governo OR eleições OR sociedade -filter:retweets lang:pt",
+                "🎵 Música & Artes": "música OR artista OR show OR festival OR cantor -filter:retweets lang:pt",
+                "🛒 Consumo & Marcas": "consumo OR marcas OR produtos OR compras OR ecommerce -filter:retweets lang:pt"
+            }
+            
+            query_pt = topicos_queries.get(query, query)
+            st.info(f"🔍 Buscando tweets sobre: {query}")
+            
+            tweets = self.api.search_tweets(q=query_pt, count=min(quantidade, 100), tweet_mode='extended')
+            
+            tweets_texto = []
+            for tweet in tweets:
+                # Pega o texto completo do tweet
+                texto = tweet.full_text if hasattr(tweet, 'full_text') else tweet.text
+                # Filtra tweets muito curtos ou com links apenas
+                if len(texto) > 10 and not texto.startswith('RT'):
+                    tweets_texto.append(texto)
+            
+            st.success(f"✅ Encontrados {len(tweets_texto)} tweets reais!")
+            return tweets_texto[:quantidade]
+            
+        except Exception as e:
+            st.error(f"Erro ao buscar tweets: {e}")
+            return self._dados_fallback(query, quantidade)
+    
+    def _dados_fallback(self, query, quantidade):
+        """Dados de fallback caso a API do Twitter falhe"""
+        fallback_data = {
+            "🚀 Tecnologia & Inovação": [
+                "Inteligência Artificial está revolucionando tudo! 🤖 Incrível demais!",
+                "Novo smartphone com câmera espetacular! 📸 Qualidade impressionante!",
+                "Metaverso ainda é uma incógnita... 🤔 Não sei o que pensar",
+            ],
+            "🎬 Entretenimento & Cultura": [
+                "Série nova na Netflix é simplesmente perfeita! 🎬",
+                "Final decepcionante arruinou toda a temporada 😞",
+                "Atuações fenomenais no último filme que assisti! 🌟",
+            ]
         }
-    
-    def _tweets_tecnologia(self):
-        return [
-            "Inteligência Artificial está revolucionando tudo! 🤖 Incrível demais!",
-            "Novo smartphone com câmera espetacular! 📸 Qualidade impressionante!",
-            "Metaverso ainda é uma incógnita... 🤔 Não sei o que pensar",
-            "Python continua dominando o mundo da data science! 🐍",
-            "Privacidade digital é uma grande preocupação atualmente 😟",
-            "5G chegando com velocidade absurda! 🚀 Mudança total!",
-            "Bugs no software novo estão me deixando frustrado 😠",
-            "Realidade Virtual é uma experiência transcendental! 🌌",
-            "Assistente virtual entendendo comandos perfeitamente! 👏",
-            "Tecnologia wearable mudando hábitos de saúde! 💪"
-        ]
-    
-    def _tweets_entretenimento(self):
-        return [
-            "Série nova na Netflix é simplesmente perfeita! 🎬",
-            "Final decepcionante arruinou toda a temporada 😞",
-            "Atuações fenomenais no último filme que assisti! 🌟",
-            "Streaming caro demais pelo conteúdo oferecido 💸",
-            "Documentário sobre natureza é visualmente deslumbrante! 🌍",
-            "Roteiro confuso e personagens mal desenvolvidos 👎",
-            "Produção independente surpreendendo pela qualidade! ✨",
-            "Efeitos especiais de tirar o fôlego! 🤯",
-            "Adaptação fiel ao material original! 📚",
-            "Horas de entretenimento de qualidade excelente! ⭐"
-        ]
-    
-    def _tweets_negocios(self):
-        return [
-            "Mercado de criptomoedas em alta impressionante! 📈",
-            "Startup innovando com soluções brilhantes! 💡",
-            "Economia global em momento delicado 😰",
-            "Empreendedorismo digital crescendo exponencialmente! 🚀",
-            "Fusão empresarial beneficiando todos os lados! 🤝",
-            "Investimentos em tecnologia trazendo retornos incríveis! 💰",
-            "Cenário econômico instável preocupa investidores 📉",
-            "Sustentabilidade como vantagem competitiva! 🌱",
-            "Mercado de trabalho em transformação digital! 💼",
-            "Inovação disruptiva mudando indústrias tradicionais! ⚡"
-        ]
-    
-    def _tweets_esportes(self):
-        return [
-            "Jogo histórico com performance espetacular! ⚽",
-            "Arbitragem controversa decidindo o resultado 😠",
-            "Atleta quebrando recordes mundialmente! 🏆",
-            "Time favorito decepcionando na temporada 😔",
-            "Torcida animada criando atmosfera incrível! 🔥",
-            "Lesões afetando desempenho da equipe 🏥",
-            "Estratégia de jogo inteligente e eficaz! 🧠",
-            "Transmissão esportiva com qualidade impecável! 📺",
-            "Atleta superando expectativas fenomenalmente! 🌟",
-            "Decisão polêmica da comissão técnica 👎"
-        ]
-    
-    def _tweets_sustentabilidade(self):
-        return [
-            "Energia solar revolucionando matriz energética! ☀️",
-            "Projetos de reflorestamento com resultados incríveis! 🌳",
-            "Consumo consciente ganhando força na sociedade! 💚",
-            "Poluição plástica ainda é desafio enorme 😞",
-            "Tecnologias verdes com potencial transformador! 🔋",
-            "Mudanças climáticas impactando comunidades 🌪️",
-            "Agricultura sustentável produzindo alimentos saudáveis! 🥦",
-            "Empresas adotando práticas eco-friendly! 🌍",
-            "Reciclagem se tornando hábito na população! ♻️",
-            "Preservação de espécies ameaçadas urgente! 🐾"
-        ]
-    
-    def _tweets_politica(self):
-        return [
-            "Medida governamental beneficiando população! 👍",
-            "Corrupção minando desenvolvimento nacional 😠",
-            "Diálogo internacional construindo pontes! 🌐",
-            "Políticas públicas precisando de ajustes 📋",
-            "Liderança inspiradora em momento crucial! 💫",
-            "Transparência nas ações governamentais 👁️",
-            "Reformas necessárias para progresso! 🛠️",
-            "Participação popular fortalecendo democracia! 🗳️",
-            "Cooperação entre nações trazendo resultados! 🤝",
-            "Desafios complexos exigindo soluções inovadoras! 💡"
-        ]
-    
-    def _tweets_musica(self):
-        return [
-            "Álbum novo superando todas as expectativas! 🎵",
-            "Show ao vivo com energia contagiante! ⚡",
-            "Letras profundas e melodias cativantes! ✨",
-            "Produção musical com qualidade questionável 🎧",
-            "Artista revelação com talento extraordinário! 🌟",
-            "Festival reunindo os melhores do cenário! 🎪",
-            "Colaboração entre gêneros musicais inovadora! 🎶",
-            "Instrumentação rica e arranjos criativos! 🎻",
-            "Performance vocal impressionante! 🎤",
-            "Evolução artística visível e admirável! 📈"
-        ]
-    
-    def _tweets_consumo(self):
-        return [
-            "Produto com design inovador e funcional! 🛍️",
-            "Atendimento ao cliente preciso e ágil! 💬",
-            "Qualidade abaixo do esperado para o preço 💸",
-            "Experiência de compra online fluida! 📱",
-            "Entrega rápida e embalagem cuidadosa! 📦",
-            "Suporte técnico resolvendo problemas eficientemente! 🔧",
-            "App intuitivo facilitando pedidos! 📲",
-            "Política de trocas desfavorável ao consumidor 👎",
-            "Valor agregado excelente no serviço! ⭐",
-            "Marca construindo relacionamento duradouro! 🤝"
-        ]
+        return fallback_data.get(query, ["Buscando tweets reais..."])[:quantidade]
     
     def analisar_sentimento_avancado(self, texto):
-        palavras_positivas = ['incrível', 'espetacular', 'fenomenal', 'perfeita', 'excelente', 
-                             'impressionante', 'brilhante', 'maravilhoso', 'fantástico', 'revolucionando',
-                             'deslumbrante', 'transcendental', 'inteligente', 'eficaz', 'contagiante']
-        
-        palavras_negativas = ['decepcionante', 'frustrado', 'preocupação', 'polêmica', 'controversa',
-                             'decepcionando', 'questionável', 'instável', 'delicado', 'complexos',
-                             'desafio', 'urgente', 'abaixo', 'desfavorável']
-        
+        """Análise de sentimentos usando TextBlob"""
+        try:
+            analysis = TextBlob(texto)
+            
+            # Traduz para inglês para melhor análise
+            try:
+                translated = analysis.translate(to='en')
+                polarity = translated.sentiment.polarity
+            except:
+                polarity = analysis.sentiment.polarity
+            
+            # Classifica baseado na polaridade
+            if polarity > 0.2:
+                return "🌟 MUITO POSITIVO", polarity, "#00b894", "🎯"
+            elif polarity > 0.05:
+                return "✅ POSITIVO", polarity, "#00cec9", "↑"
+            elif polarity < -0.2:
+                return "💥 MUITO NEGATIVO", polarity, "#d63031", "⚠️"
+            elif polarity < -0.05:
+                return "❌ NEGATIVO", polarity, "#e17055", "↓"
+            else:
+                return "⚖️ NEUTRO", polarity, "#fdcb6e", "➡️"
+                
+        except Exception as e:
+            return "⚖️ NEUTRO", 0, "#fdcb6e", "➡️"
         score = 0
         for palavra in texto.lower().split():
             if palavra in palavras_positivas:
@@ -306,7 +271,7 @@ class SentimentAnalyzerPro:
             return "⚖️  NEUTRO", score, "#fdcb6e", "➡️"
 
 def main():
-    analyzer = SentimentAnalyzerPro()
+  analyzer = TwitterSentimentAnalyzer()
     
     # HEADER PREMIUM
     st.markdown('<h1 class="main-header">🚀 Sentiment Analytics Pro</h1>', unsafe_allow_html=True)
@@ -359,7 +324,7 @@ def main():
             time.sleep(1.5)
 
             tweets_disponiveis = analyzer.topicos_premium[topico]
-            tweets = random.sample(tweets_disponiveis, min(quantidade, len(tweets_disponiveis)))
+            tweets = analyzer.buscar_tweets_reais(...)
             resultados = []
             
             for tweet in tweets:
