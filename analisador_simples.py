@@ -226,28 +226,96 @@ class TwitterSentimentAnalyzer:
                 "Novo smartphone com câmera espetacular! 📸 Qualidade impressionante!",
                 "Metaverso ainda é uma incógnita... 🤔 Não sei o que pensar",
                 "Python continua dominando o mundo da data science! 🐍",
-                "Privacidade digital é uma grande preocupação atualmente 😟"
+                "Privacidade digital é uma grande preocupação atualmente 😟",
+                "5G chegando com velocidade absurda! 🚀 Mudança total!",
+                "Bugs no software novo estão me deixando frustrado 😠",
+                "Realidade Virtual é uma experiência transcendental! 🌌",
+                "Assistente virtual entendendo comandos perfeitamente! 👏",
+                "Tecnologia wearable mudando hábitos de saúde! 💪"
             ],
             "🎬 Entretenimento & Cultura": [
                 "Série nova na Netflix é simplesmente perfeita! 🎬",
                 "Final decepcionante arruinou toda a temporada 😞",
                 "Atuações fenomenais no último filme que assisti! 🌟",
                 "Streaming caro demais pelo conteúdo oferecido 💸",
-                "Documentário sobre natureza é visualmente deslumbrante! 🌍"
+                "Documentário sobre natureza é visualmente deslumbrante! 🌍",
+                "Roteiro confuso e personagens mal desenvolvidos 👎",
+                "Produção independente surpreendendo pela qualidade! ✨",
+                "Efeitos especiais de tirar o fôlego! 🤯",
+                "Adaptação fiel ao material original! 📚",
+                "Horas de entretenimento de qualidade excelente! ⭐"
             ],
             "💼 Negócios & Economia": [
                 "Mercado de criptomoedas em alta impressionante! 📈",
                 "Startup innovando com soluções brilhantes! 💡",
                 "Economia global em momento delicado 😰",
                 "Empreendedorismo digital crescendo exponencialmente! 🚀",
-                "Fusão empresarial beneficiando todos os lados! 🤝"
+                "Fusão empresarial beneficiando todos os lados! 🤝",
+                "Investimentos em tecnologia trazendo retornos incríveis! 💰",
+                "Cenário econômico instável preocupa investidores 📉",
+                "Sustentabilidade como vantagem competitiva! 🌱",
+                "Mercado de trabalho em transformação digital! 💼",
+                "Inovação disruptiva mudando indústrias tradicionais! ⚡"
             ],
             "🏆 Esportes & Competições": [
                 "Jogo histórico com performance espetacular! ⚽",
                 "Arbitragem controversa decidindo o resultado 😠",
                 "Atleta quebrando recordes mundialmente! 🏆",
                 "Time favorito decepcionando na temporada 😔",
-                "Torcida animada criando atmosfera incrível! 🔥"
+                "Torcida animada criando atmosfera incrível! 🔥",
+                "Lesões afetando desempenho da equipe 🏥",
+                "Estratégia de jogo inteligente e eficaz! 🧠",
+                "Transmissão esportiva com qualidade impecável! 📺",
+                "Atleta superando expectativas fenomenalmente! 🌟",
+                "Decisão polêmica da comissão técnica 👎"
+            ],
+            "🌍 Sustentabilidade & Meio Ambiente": [
+                "Energia solar revolucionando matriz energética! ☀️",
+                "Projetos de reflorestamento com resultados incríveis! 🌳",
+                "Consumo consciente ganhando força na sociedade! 💚",
+                "Poluição plástica ainda é desafio enorme 😞",
+                "Tecnologias verdes com potencial transformador! 🔋",
+                "Mudanças climáticas impactando comunidades 🌪️",
+                "Agricultura sustentável produzindo alimentos saudáveis! 🥦",
+                "Empresas adotando práticas eco-friendly! 🌍",
+                "Reciclagem se tornando hábito na população! ♻️",
+                "Preservação de espécies ameaçadas urgente! 🐾"
+            ],
+            "🏛️ Política & Sociedade": [
+                "Medida governamental beneficiando população! 👍",
+                "Corrupção minando desenvolvimento nacional 😠",
+                "Diálogo internacional construindo pontes! 🌐",
+                "Políticas públicas precisando de ajustes 📋",
+                "Liderança inspiradora em momento crucial! 💫",
+                "Transparência nas ações governamentais 👁️",
+                "Reformas necessárias para progresso! 🛠️",
+                "Participação popular fortalecendo democracia! 🗳️",
+                "Cooperação entre nações trazendo resultados! 🤝",
+                "Desafios complexos exigindo soluções inovadoras! 💡"
+            ],
+            "🎵 Música & Artes": [
+                "Álbum novo superando todas as expectativas! 🎵",
+                "Show ao vivo com energia contagiante! ⚡",
+                "Letras profundas e melodias cativantes! ✨",
+                "Produção musical com qualidade questionável 🎧",
+                "Artista revelação com talento extraordinário! 🌟",
+                "Festival reunindo os melhores do cenário! 🎪",
+                "Colaboração entre gêneros musicais inovadora! 🎶",
+                "Instrumentação rica e arranjos criativos! 🎻",
+                "Performance vocal impressionante! 🎤",
+                "Evolução artística visível e admirável! 📈"
+            ],
+            "🛒 Consumo & Marcas": [
+                "Produto com design inovador e funcional! 🛍️",
+                "Atendimento ao cliente preciso e ágil! 💬",
+                "Qualidade abaixo do esperado para o preço 💸",
+                "Experiência de compra online fluida! 📱",
+                "Entrega rápida e embalagem cuidadosa! 📦",
+                "Suporte técnico resolvendo problemas eficientemente! 🔧",
+                "App intuitivo facilitando pedidos! 📲",
+                "Política de trocas desfavorável ao consumidor 👎",
+                "Valor agregado excelente no serviço! ⭐",
+                "Marca construindo relacionamento duradouro! 🤝"
             ]
         }
         return fallback_data.get(query, ["Analisando dados do tema selecionado... 📊"])[:quantidade]
@@ -339,6 +407,11 @@ def main():
                     'engajamento': random.randint(50, 1000)
                 })
             
+            # DEBUG - verificar se há resultados
+            st.write(f"Total de resultados: {len(resultados)}")
+            for i, resultado in enumerate(resultados):
+                st.write(f"Resultado {i}: {resultado['texto'][:50]}...")
+            
             # MÉTRICAS PREMIUM
             st.markdown('<div class="fade-in">', unsafe_allow_html=True)
             
@@ -427,35 +500,32 @@ def main():
                                        color_discrete_sequence=['#00b894', '#00cec9', '#fdcb6e', '#e17055', '#d63031'])
                 st.plotly_chart(fig_scatter, use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
-            # DEBUG - verificar se há resultados
-st.write(f"Total de resultados: {len(resultados)}")
-for i, resultado in enumerate(resultados):
-    st.write(f"Resultado {i}: {resultado['texto'][:50]}...")
-           # ANÁLISE INDIVIDUAL
-st.markdown("---")
-st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-st.subheader(f"🔍 Análise Detalhada: {topico}")
+            
+            # ANÁLISE INDIVIDUAL
+            st.markdown("---")
+            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+            st.subheader(f"🔍 Análise Detalhada: {topico}")
 
-for resultado in resultados:
-    st.markdown(f"""
-    <div class="tweet-card" style="border-left-color: {resultado['cor']}">
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div style="flex: 1;">
-                <p style="margin: 0; font-size: 1rem; line-height: 1.5;">{resultado['texto']}</p>
-                <div style="margin-top: 10px; display: flex; gap: 15px; align-items: center;">
-                    <small>👤 @{resultado['usuario']}</small>
-                    <small>🔥 {resultado['engajamento']} engajamento</small>
-                    <small>📊 Score: {resultado['score']:.2f}</small>
+            for resultado in resultados:
+                st.markdown(f"""
+                <div class="tweet-card" style="border-left-color: {resultado['cor']}">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="flex: 1;">
+                            <p style="margin: 0; font-size: 1rem; line-height: 1.5;">{resultado['texto']}</p>
+                            <div style="margin-top: 10px; display: flex; gap: 15px; align-items: center;">
+                                <small>👤 @{resultado['usuario']}</small>
+                                <small>🔥 {resultado['engajamento']} engajamento</small>
+                                <small>📊 Score: {resultado['score']:.2f}</small>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="sentiment-badge" style="background-color: {resultado['cor']}20; color: {resultado['cor']}; border: 1px solid {resultado['cor']}40;">
+                                <strong>{resultado['emoji']} {resultado['sentimento']}</strong>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div style="text-align: right;">
-                <div class="sentiment-badge" style="background-color: {resultado['cor']}20; color: {resultado['cor']}; border: 1px solid {resultado['cor']}40;">
-                    <strong>{resultado['emoji']} {resultado['sentimento']}</strong>
-                </div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
             
             st.markdown('</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)  # Fecha fade-in
