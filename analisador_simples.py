@@ -427,32 +427,35 @@ def main():
                                        color_discrete_sequence=['#00b894', '#00cec9', '#fdcb6e', '#e17055', '#d63031'])
                 st.plotly_chart(fig_scatter, use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
-            
-            # ANÁLISE INDIVIDUAL
-            st.markdown("---")
-            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-            st.subheader(f"🔍 Análise Detalhada: {topico}")
-            
-            for resultado in resultados:
-                st.markdown(f"""
-                <div class="tweet-card" style="border-left-color: {resultado['cor']}">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
-                        <div style="flex: 1;">
-                            <p style="margin: 0; font-size: 1rem; line-height: 1.5;">{resultado['texto']}</p>
-                            <div style="margin-top: 10px; display: flex; gap: 15px; align-items: center;">
-                                <small>👤 @{resultado['usuario']}</small>
-                                <small>🔥 {resultado['engajamento']} engajamento</small>
-                                <small>📊 Score: {resultado['score']:.2f}</small>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div class="sentiment-badge" style="background-color: {resultado['cor']}20; color: {resultado['cor']}; border: 1px solid {resultado['cor']}40;">
-                                <strong>{resultado['emoji']} {resultado['sentimento']}</strong>
-                            </div>
-                        </div>
-                    </div>
+            # DEBUG - verificar se há resultados
+st.write(f"Total de resultados: {len(resultados)}")
+for i, resultado in enumerate(resultados):
+    st.write(f"Resultado {i}: {resultado['texto'][:50]}...")
+           # ANÁLISE INDIVIDUAL
+st.markdown("---")
+st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+st.subheader(f"🔍 Análise Detalhada: {topico}")
+
+for resultado in resultados:
+    st.markdown(f"""
+    <div class="tweet-card" style="border-left-color: {resultado['cor']}">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div style="flex: 1;">
+                <p style="margin: 0; font-size: 1rem; line-height: 1.5;">{resultado['texto']}</p>
+                <div style="margin-top: 10px; display: flex; gap: 15px; align-items: center;">
+                    <small>👤 @{resultado['usuario']}</small>
+                    <small>🔥 {resultado['engajamento']} engajamento</small>
+                    <small>📊 Score: {resultado['score']:.2f}</small>
                 </div>
-                """, unsafe_allow_html=True)
+            </div>
+            <div style="text-align: right;">
+                <div class="sentiment-badge" style="background-color: {resultado['cor']}20; color: {resultado['cor']}; border: 1px solid {resultado['cor']}40;">
+                    <strong>{resultado['emoji']} {resultado['sentimento']}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
             
             st.markdown('</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)  # Fecha fade-in
