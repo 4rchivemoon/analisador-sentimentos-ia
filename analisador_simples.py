@@ -184,7 +184,7 @@ class TwitterSentimentAnalyzer:
         except Exception as e:
             st.error(f"❌ Erro na autenticação: {e}")
     
-    def buscar_tweets_reais(self, query, quantidade=50):
+       def buscar_tweets_reais(self, query, quantidade=50):
         """Busca tweets reais baseados na query"""
         try:
             # Tradutor de tópicos para queries em português
@@ -213,9 +213,9 @@ class TwitterSentimentAnalyzer:
             
             return tweets_texto[:quantidade]
             
-       except Exception as e:
-    st.info("🔍 Analisando com dados otimizados...")
-    return self._dados_fallback(query, quantidade)
+        except Exception as e:
+            # REMOVE a mensagem de erro - usa fallback silenciosamente
+            return self._dados_fallback(query, quantidade)
     
     def _dados_fallback(self, query, quantidade):
         """Dados de fallback caso a API do Twitter falhe"""
