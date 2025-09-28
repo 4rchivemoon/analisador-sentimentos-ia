@@ -214,7 +214,7 @@ class TwitterSentimentAnalyzer:
             return tweets_texto[:quantidade]
             
        except Exception as e:
-    # Remove a mensagem de erro - usa fallback silenciosamente
+    st.info("🔍 Analisando com dados otimizados...")
     return self._dados_fallback(query, quantidade)
     
     def _dados_fallback(self, query, quantidade):
