@@ -4,6 +4,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import random
 from datetime import datetime, timedelta
+import tweepy
+import os
+from textblob import TextBlob
 
 # CONFIGURAÇÃO DA PÁGINA
 st.set_page_config(
@@ -153,25 +156,31 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-class SentimentAnalyzerPro:
-    import tweepy
-import os
-from textblob import TextBlob
-
 class TwitterSentimentAnalyzer:
     def __init__(self):
         # CONFIGURAÇÃO SEGURA COM SECRETS
-        self.api_key = st.secrets["TWITTER_API_KEY"]
-        self.api_secret = st.secrets["TWITTER_API_SECRET"]
-        self.access_token = st.secrets["TWITTER_ACCESS_TOKEN"]
-        self.access_token_secret = st.secrets["TWITTER_ACCESS_TOKEN_SECRET"]
+        self.api_key = st.secrets.get("TWITTER_API_KEY", "sua_chave_aqui")
+        self.api_secret = st.secrets.get("TWITTER_API_SECRET", "seu_secret_aqui")
+        self.access_token = st.secrets.get("TWITTER_ACCESS_TOKEN", "seu_token_aqui")
+        self.access_token_secret = st.secrets.get("TWITTER_ACCESS_TOKEN_SECRET", "seu_token_secret_aqui")
+        
+        # Lista de categorias para o selectbox
+        self.categorias = [
+            "🚀 Tecnologia & Inovação",
+            "🎬 Entretenimento & Cultura", 
+            "💼 Negócios & Economia",
+            "🏆 Esportes & Competições",
+            "🌍 Sustentabilidade & Meio Ambiente",
+            "🏛️ Política & Sociedade",
+            "🎵 Música & Artes",
+            "🛒 Consumo & Marcas"
+        ]
         
         # Autenticação
         try:
             self.auth = tweepy.OAuthHandler(self.api_key, self.api_secret)
             self.auth.set_access_token(self.access_token, self.access_token_secret)
             self.api = tweepy.API(self.auth, wait_on_rate_limit=True)
-            st.success("✅ Conectado ao Twitter API!")
         except Exception as e:
             st.error(f"❌ Erro na autenticação: {e}")
     
@@ -191,7 +200,6 @@ class TwitterSentimentAnalyzer:
             }
             
             query_pt = topicos_queries.get(query, query)
-            st.info(f"🔍 Buscando tweets sobre: {query}")
             
             tweets = self.api.search_tweets(q=query_pt, count=min(quantidade, 100), tweet_mode='extended')
             
@@ -203,7 +211,6 @@ class TwitterSentimentAnalyzer:
                 if len(texto) > 10 and not texto.startswith('RT'):
                     tweets_texto.append(texto)
             
-            st.success(f"✅ Encontrados {len(tweets_texto)} tweets reais!")
             return tweets_texto[:quantidade]
             
         except Exception as e:
@@ -252,30 +259,14 @@ class TwitterSentimentAnalyzer:
                 
         except Exception as e:
             return "⚖️ NEUTRO", 0, "#fdcb6e", "➡️"
-        score = 0
-        for palavra in texto.lower().split():
-            if palavra in palavras_positivas:
-                score += 2
-            elif palavra in palavras_negativas:
-                score -= 2
-        
-        if score >= 3:
-            return "🌟 MUITO POSITIVO", score, "#00b894", "🎯"
-        elif score >= 1:
-            return "✅ POSITIVO", score, "#00cec9", "↑"
-        elif score <= -3:
-            return "💥 MUITO NEGATIVO", score, "#d63031", "⚠️"
-        elif score <= -1:
-            return "❌ NEGATIVO", score, "#e17055", "↓"
-        else:
-            return "⚖️  NEUTRO", score, "#fdcb6e", "➡️"
 
 def main():
-    analyzer = TwitterSentimentAnalyzer()  # ← 4 espaços
+    analyzer = TwitterSentimentAnalyzer()
     
     # HEADER PREMIUM
     st.markdown('<h1 class="main-header">🚀 Sentiment Analytics Pro</h1>', unsafe_allow_html=True)
     st.markdown('<p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 3rem;">Análise de Sentimentos em Tempo Real • IA Avançada</p>', unsafe_allow_html=True)
+    
     # SIDEBAR PREMIUM
     with st.sidebar:
         st.markdown('<div class="glass-card">', unsafe_allow_html=True)
@@ -283,14 +274,14 @@ def main():
         
         topico = st.selectbox(
             "📂 Selecione a Categoria:",
-            list(analyzer.topicos_premium.keys())
+            analyzer.categorias
         )
         
         quantidade = st.slider(
             "📊 Volume de Análise:",
-            min_value=8,
+            min_value=5,
             max_value=20,
-            value=12,
+            value=10,
             help="Quantidade de dados para análise"
         )
         
@@ -318,12 +309,8 @@ def main():
         topico = st.session_state.topico
         
         with st.spinner("🔮 Processando análise avançada..."):
-            # Simular delay para efeito de processamento
-            import time
-            time.sleep(1.5)
-
-            tweets_disponiveis = analyzer.topicos_premium[topico]
-            tweets = analyzer.buscar_tweets_reais(...)
+            # Buscar tweets REAIS
+            tweets = analyzer.buscar_tweets_reais(topico, quantidade)
             resultados = []
             
             for tweet in tweets:
@@ -397,7 +384,7 @@ def main():
                     'Valores': [
                         sum(1 for r in resultados if "MUITO POSITIVO" in r['sentimento']),
                         sum(1 for r in resultados if r['sentimento'] == "✅ POSITIVO"),
-                        sum(1 for r in resultados if r['sentimento'] == "⚖️  NEUTRO"),
+                        sum(1 for r in resultados if r['sentimento'] == "⚖️ NEUTRO"),
                         sum(1 for r in resultados if r['sentimento'] == "❌ NEGATIVO"),
                         sum(1 for r in resultados if "MUITO NEGATIVO" in r['sentimento'])
                     ]
@@ -441,7 +428,7 @@ def main():
                             <div style="margin-top: 10px; display: flex; gap: 15px; align-items: center;">
                                 <small>👤 @{resultado['usuario']}</small>
                                 <small>🔥 {resultado['engajamento']} engajamento</small>
-                                <small>📊 Score: {resultado['score']}</small>
+                                <small>📊 Score: {resultado['score']:.2f}</small>
                             </div>
                         </div>
                         <div style="text-align: right;">
