@@ -26,4 +26,4 @@ Sistema de análise de sentimentos desenvolvido em Python com Streamlit, focado 
 
 ## 👩‍💻 Desenvolvido por
 
-[Seu Nome] - Projeto de estudo em IA e Análise de Sentimentos
+Maria Clara da S. Bezerra - Projeto de estudo em IA e Análise de Sentimentos
